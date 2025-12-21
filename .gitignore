@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv1/
+
+# PyCharm
+.idea/
+
+# Allure
+reports/allure-results/
+reports/allure-report/
+
+# Screenshots locales
+reports/screenshots/
+
+# OS
+.DS_Store
+
+
+## === Los reports no se versionan, se generan en CI ===
