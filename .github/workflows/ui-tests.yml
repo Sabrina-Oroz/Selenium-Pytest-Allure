@@ -1,4 +1,4 @@
-name: UI Tests - Smoke
+name: UI Tests - Smoke | Regression
 
 permissions:
   contents: write
@@ -42,15 +42,55 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
+
+  smoke-tests:
+    name: UI Tests - Smoke
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-             echo "Manual run: ${{ inputs.test_type }}"
-             pytest tests/${{ inputs.test_type }} -m ${{ inputs.test_type }} --alluredir=reports/allure-results
-          else
-             echo "Auto run: smoke"
-             pytest tests/smoke -m smoke --alluredir=reports/allure-results
-          fi
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run smoke tests
+        run: |
+          pytest tests/smoke -m smoke --alluredir=reports/allure-results
+  
+
+  regression-tests:
+    name: UI Tests - Regression
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run regression tests
+        run: |
+          pytest tests/regression -m regression --alluredir=reports/allure-results    
+      
+      
 
       - name: Install Allure
         run: |
