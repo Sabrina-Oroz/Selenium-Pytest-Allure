@@ -47,10 +47,10 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
              echo "Manual run: ${{ inputs.test_type }}"
              pytest tests/${{ inputs.test_type }} -m ${{ inputs.test_type }} --alluredir=reports/allure-results
-         else
+          else
              echo "Auto run: smoke"
              pytest tests/smoke -m smoke --alluredir=reports/allure-results
-         fi
+          fi
 
       - name: Install Allure
         run: |
