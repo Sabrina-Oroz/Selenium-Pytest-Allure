@@ -35,3 +35,12 @@ jobs:
       - name: Run UI tests
         run: |
           pytest tests/smoke --alluredir=reports/allure-results
+
+      - name: Install Allure
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          curl -o allure.tgz -Ls https://github.com/allure-framework/allure2/releases/latest/download/allure-2.29.0.tgz
+          tar -zxvf allure.tgz
+          sudo mv allure-2.29.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
