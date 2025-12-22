@@ -6,8 +6,19 @@ permissions:
 on:
   push:
     branches: [ "main" ]
+
   pull_request:
-    branches: [ "main" ]
+
+  workflow_dispatch:
+      inputs:
+        test_type:
+          description: "Tipo de tests a ejecutar"
+          required: true
+          default: "smoke"
+          type: choice
+          options:
+            - smoke
+            - regression
 
 defaults:
   run:
@@ -31,13 +42,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run smoke tests
+      - name: Run tests
         run: |
-          pytest tests/smoke --alluredir=reports/allure-results
-          
-      - name: Run UI tests
-        run: |
-          pytest tests/smoke --alluredir=reports/allure-results
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+             echo "Manual run: ${{ inputs.test_type }}"
+             pytest tests/${{ inputs.test_type }} -m ${{ inputs.test_type }} --alluredir=reports/allure-results
+         else
+             echo "Auto run: smoke"
+             pytest tests/smoke -m smoke --alluredir=reports/allure-results
+         fi
 
       - name: Install Allure
         run: |
