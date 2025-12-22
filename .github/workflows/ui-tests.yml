@@ -31,3 +31,7 @@ jobs:
       - name: Run smoke tests
         run: |
           pytest tests/smoke --alluredir=reports/allure-results
+          
+      - name: Run UI tests
+        run: |
+          pytest tests/smoke --alluredir=reports/allure-results
