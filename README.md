@@ -1,3 +1,7 @@
+[![UI Tests - Smoke](https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-tests.yml/badge.svg)](
+https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-tests.yml
+)
+
 ## Selenium + Pytest + Allure
 
 Proyecto de automatización con tecnologías:
