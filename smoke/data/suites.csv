@@ -1,0 +1,30 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Dec 23 16:21:52 UTC 2025","Tue Dec 23 16:21:53 UTC 2025","686","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+El usuario completa:
+- ComboBox simple
+- ComboBox múltiple
+- Sistema operativo y versión
+Y envía el formulario correctamente.
+"
+"passed","Tue Dec 23 16:21:53 UTC 2025","Tue Dec 23 16:21:56 UTC 2025","2983","tests.smoke","test_textbox","","","","CP - Enviar formulario con selecciones válidas","                                              
+El usuario completa:
+- Nombre completo
+- Email
+- Dirección concurrente
+_ Dirección permantente
+Y envía el formulario correctamente.
+"
+"passed","Tue Dec 23 16:21:49 UTC 2025","Tue Dec 23 16:21:50 UTC 2025","967","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+El usuario completa:
+- ComboBox simple
+- ComboBox múltiple
+- Sistema operativo y versión
+Y envía el formulario correctamente.
+"
+"passed","Tue Dec 23 16:21:51 UTC 2025","Tue Dec 23 16:21:51 UTC 2025","687","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+El usuario completa:
+- ComboBox simple
+- ComboBox múltiple
+- Sistema operativo y versión
+Y envía el formulario correctamente.
+"
