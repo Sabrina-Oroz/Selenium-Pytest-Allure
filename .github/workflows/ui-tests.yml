@@ -101,57 +101,93 @@ jobs:
 # publish-allure → consume artifacts y publica
 
   publish-allure:
-      name: Publish Allure Report
-      runs-on: ubuntu-latest
+    name: Publish Allure Report
+    runs-on: ubuntu-latest
 
-      needs:
-        - smoke-tests
-        - regression-tests
+    needs:
+      - smoke-tests
+      - regression-tests
 
-      if: always()
+    if: always()
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        - name: Download Smoke Allure results
-          uses: actions/download-artifact@v4
-          continue-on-error: true
-          with:
-            name: allure-results-smoke
-            path: reports/smoke
 
-        - name: Download Regression Allure results
-          uses: actions/download-artifact@v4
-          continue-on-error: true
-          with:
-            name: allure-results-regression
-            path: reports/regression
+      # Descarga los artefactos
 
-        - name: Install Allure
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y default-jre
-            curl -L -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
-            tar -zxvf allure.tgz
-            sudo mv allure-2.29.0 /opt/allure
-            sudo ln -s /opt/allure/bin/allure /usr/bin/allure
-            allure --version
+      - name: Download Smoke Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-smoke
+          path: artifacts/smoke
+        continue-on-error: true
 
-        - name: Generate Smoke Allure Report
-          run: |
-            if [ -d "reports/smoke" ] && [ "$(ls -A reports/smoke)" ]; then
-            allure generate reports/smoke --clean -o public/smoke
-            fi
+      - name: Download Regression Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-regression
+          path: artifacts/regression
+        continue-on-error: true
 
-        - name: Generate Regression Allure Report
-          run: |
-            if [ -d "reports/regression" ] && [ "$(ls -A reports/regression)" ]; then
-            generate reports/regression --clean -o public/regression
-            fi
 
-        - name: Deploy Allure Reports to GitHub Pages
-          uses: peaceiris/actions-gh-pages@v3
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: public
+      # Instalación Java + Allure
+
+      - name: Install Java
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+
+      - name: Install Allure
+        run: |
+          curl -L -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+          tar -zxvf allure.tgz
+          sudo mv allure-2.29.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+          allure --version
+      
+
+      # Generarión de reportes
+
+      - name: Generate Allure Reports
+        run: |
+          mkdir -p public/smoke public/regression
+          
+          if [ -d artifacts/smoke ]; then
+            allure generate artifacts/smoke --clean -o public/smoke || true
+          fi
+          
+          if [ -d artifacts/regression ]; then
+            allure generate artifacts/regression --clean -o public/regression || true
+          fi
+      
+
+      # Creación index.html raíz para smoke y regression
+
+      - name: Create index.html
+        run: |
+          cat <<EOF > public/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Allure Reports</title>
+          </head>
+          <body>
+            <h1>Allure Reports</h1>
+            <ul>
+              <li><a href="smoke/">Smoke Tests</a></li>
+              <li><a href="regression/">Regression Tests</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+      
+
+      # Publicación en GitHub Pages
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
