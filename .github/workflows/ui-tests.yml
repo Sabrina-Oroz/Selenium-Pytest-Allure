@@ -114,17 +114,19 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
 
-        - name: Download Smoke Allure Results
+        - name: Download Smoke Allure results
           uses: actions/download-artifact@v4
           with:
             name: allure-results-smoke
-            path: reports/allure-results/smoke
+            path: reports/smoke
+          continue-on-error: true
 
-        - name: Download Regression Allure Results
+        - name: Download Regression Allure results
           uses: actions/download-artifact@v4
           with:
             name: allure-results-regression
-            path: reports/allure-results/regression
+            path: reports/regression
+          continue-on-error: true
 
         - name: Install Allure
           run: |
@@ -136,21 +138,20 @@ jobs:
             sudo ln -s /opt/allure/bin/allure /usr/bin/allure
             allure --version
 
-        - name: Generate Allure Reports
+        - name: Generate Smoke Allure Report
           run: |
-            mkdir -p allure-report/smoke
-            mkdir -p allure-report/regression
-
-            if [ -d "reports/allure-results/smoke" ]; then
-            allure generate reports/allure-results/smoke --clean -o allure-report/smoke
+            if [ -d "reports/smoke" ] && [ "$(ls -A reports/smoke)" ]; then
+            allure generate reports/smoke --clean -o public/smoke
             fi
 
-            if [ -d "reports/allure-results/regression" ]; then
-            allure generate reports/allure-results/regression --clean -o allure-report/regression
-            fi
+        - name: Generate Regression Allure Report
+          run: |
+            if [ -d "reports/regression" ] && [ "$(ls -A reports/regression)" ]; then
+           generate reports/regression --clean -o public/regression
+           fi
 
         - name: Deploy Allure Reports to GitHub Pages
           uses: peaceiris/actions-gh-pages@v3
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: allure-report
+            publish_dir: public
