@@ -29,6 +29,9 @@ jobs:
     name: UI Tests - Smoke
     runs-on: ubuntu-latest
 
+    # Push (local) → corre smoke (default) + allure | Ejecución manual + smoke (CI) → solo smoke + allure
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.test_type == 'smoke'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,6 +48,8 @@ jobs:
 
       - name: Run smoke tests
         run: pytest tests/smoke -m smoke --alluredir=reports/allure-results
+        env:
+          HEADLESS: true
 
       - name: Upload Allure results
         if: always()
@@ -58,7 +63,8 @@ jobs:
     name: UI Tests - Regression
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'workflow_dispatch'
+    # Ejecución manual + regression (CI) → solo regression + allure
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'regression'
 
     steps:
       - name: Checkout code
@@ -76,6 +82,8 @@ jobs:
 
       - name: Run regression tests
         run: pytest tests/regression -m regression --alluredir=reports/allure-results
+        env:
+          HEADLESS: true
 
       - name: Upload Allure results
         if: always()
@@ -85,23 +93,64 @@ jobs:
            path: reports/allure-results
       
 
+# GitHub: Se descargan los artefactos por separado - Se generan dos reportes distintos - Se publican ambos en Pages
+# smoke-tests → produce allure-results-smoke
 
-      - name: Install Allure
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jre
-          curl -L -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
-          tar -zxvf allure.tgz
-          sudo mv allure-2.29.0 /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
-          allure --version
+# regression-tests → produce allure-results-regression
 
-      - name: Generate Allure Report
-        run: |
-          allure generate reports/allure-results --clean -o allure-report 
+# publish-allure → consume artifacts y publica
 
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-         github_token: ${{ secrets.GITHUB_TOKEN }}
-         publish_dir: allure-report
+  publish-allure:
+      name: Publish Allure Report
+      runs-on: ubuntu-latest
+
+      needs:
+        - smoke-tests
+        - regression-tests
+
+      if: always()
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Download Smoke Allure Results
+          uses: actions/download-artifact@v4
+          with:
+            name: allure-results-smoke
+            path: reports/allure-results/smoke
+
+        - name: Download Regression Allure Results
+          uses: actions/download-artifact@v4
+          with:
+            name: allure-results-regression
+            path: reports/allure-results/regression
+
+        - name: Install Allure
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y default-jre
+            curl -L -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+            tar -zxvf allure.tgz
+            sudo mv allure-2.29.0 /opt/allure
+            sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+            allure --version
+
+        - name: Generate Allure Reports
+          run: |
+            mkdir -p allure-report/smoke
+            mkdir -p allure-report/regression
+
+            if [ -d "reports/allure-results/smoke" ]; then
+            allure generate reports/allure-results/smoke --clean -o allure-report/smoke
+            fi
+
+            if [ -d "reports/allure-results/regression" ]; then
+            allure generate reports/allure-results/regression --clean -o allure-report/regression
+            fi
+
+        - name: Deploy Allure Reports to GitHub Pages
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: allure-report
