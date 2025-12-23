@@ -116,17 +116,17 @@ jobs:
 
         - name: Download Smoke Allure results
           uses: actions/download-artifact@v4
+          continue-on-error: true
           with:
             name: allure-results-smoke
             path: reports/smoke
-          continue-on-error: true
 
         - name: Download Regression Allure results
           uses: actions/download-artifact@v4
+          continue-on-error: true
           with:
             name: allure-results-regression
             path: reports/regression
-          continue-on-error: true
 
         - name: Install Allure
           run: |
@@ -147,8 +147,8 @@ jobs:
         - name: Generate Regression Allure Report
           run: |
             if [ -d "reports/regression" ] && [ "$(ls -A reports/regression)" ]; then
-           generate reports/regression --clean -o public/regression
-           fi
+            generate reports/regression --clean -o public/regression
+            fi
 
         - name: Deploy Allure Reports to GitHub Pages
           uses: peaceiris/actions-gh-pages@v3
