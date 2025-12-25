@@ -1,5 +1,12 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Tue Dec 23 17:11:16 UTC 2025","Tue Dec 23 17:11:18 UTC 2025","2807","tests.smoke","test_textbox","","","","CP - Enviar formulario con selecciones válidas","                                              
+"passed","Thu Dec 25 20:42:42 UTC 2025","Thu Dec 25 20:42:43 UTC 2025","640","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+El usuario completa:
+- ComboBox simple
+- ComboBox múltiple
+- Sistema operativo y versión
+Y envía el formulario correctamente.
+"
+"passed","Thu Dec 25 20:42:43 UTC 2025","Thu Dec 25 20:42:46 UTC 2025","2893","tests.smoke","test_textbox","","","","CP - Enviar formulario con selecciones válidas","                                              
 El usuario completa:
 - Nombre completo
 - Email
@@ -7,21 +14,14 @@ El usuario completa:
 _ Dirección permantente
 Y envía el formulario correctamente.
 "
-"passed","Tue Dec 23 17:11:13 UTC 2025","Tue Dec 23 17:11:14 UTC 2025","733","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+"passed","Thu Dec 25 20:42:39 UTC 2025","Thu Dec 25 20:42:41 UTC 2025","1408","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
 El usuario completa:
 - ComboBox simple
 - ComboBox múltiple
 - Sistema operativo y versión
 Y envía el formulario correctamente.
 "
-"passed","Tue Dec 23 17:11:14 UTC 2025","Tue Dec 23 17:11:15 UTC 2025","753","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
-El usuario completa:
-- ComboBox simple
-- ComboBox múltiple
-- Sistema operativo y versión
-Y envía el formulario correctamente.
-"
-"passed","Tue Dec 23 17:11:11 UTC 2025","Tue Dec 23 17:11:13 UTC 2025","1672","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
+"passed","Thu Dec 25 20:42:41 UTC 2025","Thu Dec 25 20:42:42 UTC 2025","640","tests.smoke","test_combobox","","","","CP - Enviar formulario con selecciones válidas","                                              
 El usuario completa:
 - ComboBox simple
 - ComboBox múltiple
