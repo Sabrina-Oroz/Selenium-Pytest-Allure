@@ -1,7 +1,7 @@
-"""El Page Object herada comportamientos de la clase BasePage. Realiza ACCIONES de negocio usando Selenium,
-el test sólo envía los datos"""
+""" El Page Object herada comportamientos de la clase BasePage. Realiza acciones de negocio encapsulando Selenium,
+Los tests y steps solo orquestan datos y validaciones. """
 
-from pages.base_page import BasePage                               # herencia BasePage
+from core.base_page import BasePage                               # herencia BasePage
 from selenium.webdriver.common.by import By                        # localiza los elementos
 from selenium.webdriver.support.ui import Select                   # realiza selecciones
 from selenium.webdriver.support import expected_conditions as EC   # condiciones que selenium evalúa
@@ -10,6 +10,10 @@ from selenium.common.exceptions import TimeoutException            # manejo cont
 
 ## === Page Object del formulario ComboBox === definimos locators
 class ComboBoxPage(BasePage):
+
+    URL = "https://validaciones.rodrigovillanueva.com.mx/ComboBox_ok.html"
+
+    # == LOCATORS ==
     COMBOBOX_1 = (By.ID, "comboBox1")
     COMBOBOX_2 = (By.ID, "comboBox2")
     OS_SELECT = (By.ID, "os")
@@ -18,20 +22,18 @@ class ComboBoxPage(BasePage):
     RESULT_MESSAGE = (By.ID, "flashMessage")
 
 
-## === Navegación === sincro inicial, abre la página
+    # == NAVEGACIÓN ==
     def open(self):
-        self.driver.get(
-            "https://validaciones.rodrigovillanueva.com.mx/ComboBox_ok.html"
-        )
+        self.driver.get(self.URL)
 
 
-## === ComboBox 1  === selección de un valor
+    ## == ComboBox 1  == selección de un valor
     def select_combobox_1(self, option):
         select = Select(self.wait.until(EC.element_to_be_clickable(self.COMBOBOX_1)))
         select.select_by_visible_text(option)
 
 
-## === ComboBox 2 (multi select) === selección más de un valor
+    ## == ComboBox 2 (multi select) == selección más de un valor
     def select_combobox_2_values(self, values):
         # Esperamos que el <select> sea visible y lo envolvemos con Select
         select = Select(self.wait.until(EC.visibility_of_element_located(self.COMBOBOX_2)))
@@ -55,7 +57,7 @@ class ComboBoxPage(BasePage):
             select.select_by_visible_text(value)
 
 
-## === Sistema Operativo + Versión ===
+    # == Sistema Operativo + Versión ==
     def select_os(self, os_name):
         select = Select(self.wait.until(EC.element_to_be_clickable(self.OS_SELECT)))
         select.select_by_visible_text(os_name)
@@ -74,16 +76,13 @@ class ComboBoxPage(BasePage):
         select.select_by_visible_text(version)
 
 
-## === Enviar formulario ===
+    # == Enviar formulario ==
     def submit(self):
         self.wait.until(EC.element_to_be_clickable(self.SUBMIT_BUTTON)).click()
 
 
-## === Obtener mensaje de confirmación (para assertions en el test) ===
+    ## == Obtener mensaje de confirmación (para assertions en el test) ==
     def get_result_message(self):
-        try:
-            return self.wait.until(
+        return self.wait.until(
             EC.visibility_of_element_located(self.RESULT_MESSAGE)
         ).text
-        except TimeoutException:
-            return None
