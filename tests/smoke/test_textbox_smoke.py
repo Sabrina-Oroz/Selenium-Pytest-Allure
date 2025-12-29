@@ -21,7 +21,8 @@ Y envía el formulario correctamente.
 """)
 
 
-## === Declaramos la función test_ con los métodos y atributos de la clase TextBoxPage, junto con los inputs ===
+## === Declaramos la función test_ con los métodos y atributos de la clase TextBoxPage, junto con los inputs
+# y descripción de steps en allure ===
 @pytest.mark.smoke
 def test_textbox_page(driver):
     page = TextBoxPage(driver)

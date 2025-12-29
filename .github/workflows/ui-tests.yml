@@ -94,10 +94,9 @@ jobs:
       
 
 # GitHub: Se descargan los artefactos por separado - Se generan dos reportes distintos - Se publican ambos en Pages
+
 # smoke-tests → produce allure-results-smoke
-
 # regression-tests → produce allure-results-regression
-
 # publish-allure → consume artifacts y publica
 
   publish-allure:

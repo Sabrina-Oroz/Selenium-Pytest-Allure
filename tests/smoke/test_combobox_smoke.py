@@ -37,7 +37,7 @@ Y envía el formulario correctamente.
 )
 
 ## === Declaramos la función test_ con los métodos y atributos de la clase ComboBoxPage,
-#      junto con los valores parametrizados con diferentes escenarios y descripción del paso a paso en allure ===
+#      junto con los valores parametrizados con diferentes escenarios y descripción de steps en allure ===
 def test_combobox_flow(driver, combo1, combo2_values, os_name, version):
     page = ComboBoxPage(driver)
 
