@@ -37,10 +37,23 @@ def step_select_os_version(driver, os_name, version):
     page.select_version(version)
 
 
+@when("hace click en el botón enviar")
+@allure.step("Enviar formulario")
+def step_enviar_formulario(driver):
+    ComboBoxPage(driver).submit()
+
+
 @then("el formulario se envía correctamente")
 @allure.step("Validar envío del formulario")
 def step_validate_result(driver):
     message = ComboBoxPage(driver).get_result_message()
 
-    assert message is not None
-    assert "formulario" in message.lower()
+    assert message, "No se mostró el mensaje de confirmación"                 # valida estructura técnica del flujo
+    assert "formulario" in message.lower(), f"Mensaje inesperado: {message}"  # validación funcional
+
+       # lower() devuelve una copia de la cadena en minúsculas, dejamos que falle explicitamente
+                                             # si no aparece va a saltar TimeoutException
+
+# REGLA MAESTRA DE ASSERTS
+# Primero valido que pasó algo
+# Después valido que pasó lo correcto

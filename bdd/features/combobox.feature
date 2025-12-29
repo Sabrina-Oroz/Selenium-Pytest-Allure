@@ -16,6 +16,7 @@ Scenario: Enviar formulario ComboBox (happy path)
   When selecciona combo principal "Valor 2"
   And selecciona combos secundarios "Valor 1,Valor 3,Valor 4"
   And selecciona sistema "Windows" y versión "Windows 11"
+  And hace click en el botón enviar
   Then el formulario se envía correctamente
 
 @regression @bdd
@@ -24,6 +25,7 @@ Scenario Outline: Enviar formulario con combinaciones válidas
   When selecciona combo principal "<combo1>"
   And selecciona combos secundarios "<combo2>"
   And selecciona sistema "<os>" y versión "<version>"
+  And hace click en el botón enviar
   Then el formulario se envía correctamente
 
 Examples:

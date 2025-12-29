@@ -21,18 +21,23 @@ def step_open_login(driver):
 # CUANDO
 @when(parsers.parse('ingresa usuario "{username}" y password "{password}"'))
 @allure.step("Ingresar credenciales")
-
 def step_login(driver, username, password):
-    LoginPage(driver).login(username, password)     # el click está encapsulado en el PageOject dentro de login
+    LoginPage(driver).complete_credentials(username, password)
+
+
+# Y
+@when("hace click en el botón login")
+@allure.step("Click en botón Login")
+def step_click_login(driver):
+    LoginPage(driver).login()
 
 
 # ENTONCES
 @then("debería acceder al área segura del sistema")
-@allure.step("Inicio de sesion correctamente    ")
-
+@allure.step("Inicio de sesión correctamente")
 def step_verify_success(driver):                    # paso para verificar acceso
     message = LoginPage(driver).get_flash_message()
-    assert "Has iniciado sesión correctamente!" in message
+    assert "You logged into a secure area!" in message
 
 
 
@@ -44,5 +49,5 @@ def step_verify_success(driver):                    # paso para verificar acceso
 @allure.step("Inicio de sesion incorrecto")
 
 def step_verify_error(driver):
-    message = LoginPage(driver).get_message()
-    assert "Has ingresado una contraseña inválida" in message
+    message = LoginPage(driver).get_flash_message()
+    assert "Your password is invalid!" in message

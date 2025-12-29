@@ -20,7 +20,6 @@ def step_open_registro(driver):
         'ingresa nombre "{name}", email "{email}", '
         'dirección actual "{current}", dirección permanente "{permanent}"'))
 @allure.step("Completar formulario de registro")
-
 def step_completar_registro(driver, name, email, current, permanent):
     TextBoxPage(driver).fill_form(name, email, current, permanent)
 
@@ -31,7 +30,7 @@ def step_enviar_formulario(driver):
     TextBoxPage(driver).submit_form()
 
 # ENTONCES
-@then("debería ver su nombre reflejado en el resultado")
+@then("debería ver sus datos reflejados en el resultado")
 @allure.step("Validar resultado de envío del formulario")
 
 def step_verificar_resultado(driver):
