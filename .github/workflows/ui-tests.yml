@@ -234,7 +234,11 @@ jobs:
           </body>
           </html>
           EOF
-      
+
+      - name: Debug public folder
+        run: |
+          ls -R public
+          
 
       # Publicación en GitHub Pages
 

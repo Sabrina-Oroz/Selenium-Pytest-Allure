@@ -72,7 +72,7 @@ def step_verify_empty_password(driver):
     message = LoginPage(driver).get_flash_message()
 
     assert_with_screenshot(
-        condition="Password is required" in message or "invalid$$$$$$$$$" in message,   #FALLO INTENCIONAL
+        condition="Password is required" in message or "invalid" in message,
         driver=driver,
         message="No se mostró el mensaje esperado para password vacía",
         step_name="Validación por password requerida"
