@@ -54,7 +54,8 @@ jobs:
       - name: Add Allure metadata
         run: |
           cp allure/environment.properties reports/allure-results/
-          cp allure/executor.json reports/allure-results/   
+          cp allure/executor.json reports/allure-results/
+          cp allure/categories.json reports/allure-results/
 
       - name: Upload Allure results
         if: always()
@@ -93,7 +94,8 @@ jobs:
       - name: Add Allure metadata
         run: |
           cp allure/environment.properties reports/allure-results/
-          cp allure/executor.json reports/allure-results/    
+          cp allure/executor.json reports/allure-results/
+          cp allure/categories.json reports/allure-results/
 
       - name: Upload Allure results
         if: always()
