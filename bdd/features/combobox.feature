@@ -10,8 +10,12 @@
 
 Feature: Formulario de registro ComboBox 1
 
+  Como usuario del sistema
+  Quiero poder registrarme a través del formulario ComboBox 1
+  Para acceder a las funcionalidades protegidas del sistema
+
 @smoke @bdd
-Scenario: Enviar formulario ComboBox (happy path)
+Scenario: ComboBox - Enviar formulario ComboBox (happy path)
   Given el usuario abre el formulario ComboBox
   When selecciona combo principal "Valor 2"
   And selecciona combos secundarios "Valor 1,Valor 3,Valor 4"
@@ -20,7 +24,7 @@ Scenario: Enviar formulario ComboBox (happy path)
   Then el formulario se envía correctamente
 
 @regression @bdd
-Scenario Outline: Enviar formulario con combinaciones válidas
+Scenario Outline: ComboBox - Enviar formulario con combinaciones válidas
   Given el usuario abre el formulario ComboBox
   When selecciona combo principal "<combo1>"
   And selecciona combos secundarios "<combo2>"

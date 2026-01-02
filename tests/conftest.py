@@ -12,14 +12,15 @@ from datetime import datetime                                    # módulo de py
 import allure                                                    # reportes + evidencias (sólo en fallos) + labels
 from allure_commons.types import AttachmentType
 
+
 ## == Import de step definitions BDD ==
 from bdd.steps.combobox_steps import *
 from bdd.steps.login_steps import *
 from bdd.steps.textbox_steps import *
 
 
-@pytest.fixture
-def driver():
+@pytest.fixture(autouse=True)
+def driver(request):
     driver = create_driver()
     assert driver is not None, "ERROR: create_driver() devolvió None"
 
@@ -29,6 +30,7 @@ def driver():
 
     driver.quit()            # cierre automático y finalización del driver.
                              # se ejecuta SIEMPRE, incluso si el test falla.
+
 
 
 """ Evidencias + reportes:
@@ -45,6 +47,8 @@ def pytest_runtest_makereport(item, call):
     # === yield permite que pytest ejecute el test y luego que vuelva con el resultado ===
     outcome = yield
     report = outcome.get_result()
+
+    setattr(item, f"rep_{report.when}", report)
 
     # === Filtro sólo cuando falla el test === report objeto con info de ejecución del test (fase call) ===
     if report.when == "call" and report.failed:

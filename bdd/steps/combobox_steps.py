@@ -44,7 +44,7 @@ def step_enviar_formulario(driver):
 
 
 @then("el formulario se envía correctamente")
-@allure.step("Validar envío del formulario")
+@allure.step("Validar que el formulario se envía correctamente")
 def step_validate_result(driver):
     message = ComboBoxPage(driver).get_result_message()
 

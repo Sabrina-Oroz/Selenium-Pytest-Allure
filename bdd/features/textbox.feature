@@ -7,7 +7,11 @@
 # Usamos tags, que luego se integran con CI y Allure
 
 
-Feature: Registro de usuario
+Feature: Formulario TextBox - Registro de usuario
+
+  Como usuario del sistema
+  Quiero poder registrarme a través del formulario TextBox
+  Para acceder a las funcionalidades protegidas del sistema
 
   @smoke @bdd
   Scenario: Registro exitoso

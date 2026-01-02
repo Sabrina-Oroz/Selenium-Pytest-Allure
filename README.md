@@ -15,16 +15,22 @@ Proyecto de automatización con tecnologías:
 
 ## Estrategia de testing y framework
 
-- Smoke tests: Validaciones funcionales críticas post-deploy.
-[Formato: Pytest + Parametrización en BDD (Happy Path y 1-2 CNCN) + Allure con labels y steps técnicos]
+- Smoke tests: Validaciones funcionales críticas pre/post-deploy.
+[Formato: Pytest + Parametrización en BDD (Happy Path y CNCN) + Allure con labels y steps técnicos]
 
 CNCN: Casos Negativos Críticos de Negocio 
 (ej: contraseña inválida, usuario bloqueado, pago rechazado)
 
-- Regression tests: Cobertura en validaciones de calidad a nivel técnico. Es decir, combinaciones de estados intermedios, 
-escenarios negativos no críticos, valores límites y validaciones de inputs masivas (todo lo que puede romperse cuando se
-modifica código y afecte la calidad).
+- Regression tests: Cobertura en validaciones funcionales a nivel técnico. Es decir, combinaciones de datos y/o estados 
+intermedios, escenarios negativos NO críticos, valores límites y validaciones de inputs masivas
+(todo lo que puede romperse cuando se modifica código y afecte la calidad).
 [Formato: Pytest + Parametrización de escenarios + Allure con labels y steps técnicos]
+
+| Suite          | Contiene                                           | Severity posible          |
+| -------------- |----------------------------------------------------| ------------------------- |
+| **Smoke**      | Escenarios críticos de negocio (happy + negativos) | CRITICAL                  |
+| **Regression** | Cobertura funcional profunda                       | CRITICAL / NORMAL / MINOR |
+
 
 - BDD ---> funcionalidades o flujos de negocio críticos con Gherkin + Allure = Smoke tests
 
@@ -48,11 +54,22 @@ modifica código y afecte la calidad).
 - La regresión masiva se cubre con pytest parametrizado
 
 
-# Estrategia de validaciones (asserts)
+## Estrategia de validaciones (asserts)
 - Smoke / BDD: validaciones de estado final observable
 - Regression: asserts estrictos y data-driven
 - Page Objects no contienen asserts
 - Las validaciones viven en tests o steps según el tipo de prueba.
+
+
+## Asserts reutilizables y evidencias
+- Existe un helper de assertions reutilizables (core/assertions.py) diseñado exclusivamente para:
+  - Casos críticos
+  - Fallos inesperados
+  - Escenarios ambiguos donde el screenshot inmediato aporta un valor real para el diagnóstico
+
+- Estos asserts pueden adjuntar screenshots en el punto exacto del fallo.
+- Independientemente de esto, el framework siempre genera evidencias visuales al
+  finalizar un test fallido mediante un hook global de pytest (tests/conftest.py).
 
 
 ## Ejecución local

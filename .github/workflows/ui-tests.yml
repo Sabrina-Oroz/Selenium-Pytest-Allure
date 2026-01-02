@@ -51,6 +51,11 @@ jobs:
         env:
           HEADLESS: true
 
+      - name: Add Allure metadata
+        run: |
+          cp allure/environment.properties reports/allure-results/
+          cp allure/executor.json reports/allure-results/   
+
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -85,6 +90,11 @@ jobs:
         env:
           HEADLESS: true
 
+      - name: Add Allure metadata
+        run: |
+          cp allure/environment.properties reports/allure-results/
+          cp allure/executor.json reports/allure-results/    
+
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -114,6 +124,7 @@ jobs:
         uses: actions/checkout@v4
 
 
+
       # Descarga los artefactos
 
       - name: Download Smoke Allure results
@@ -131,6 +142,16 @@ jobs:
           name: allure-results-regression
           path: artifacts/regression
         continue-on-error: true
+
+      - name: Restore Allure history
+        run: |
+            if [ -d public/smoke/history ]; then
+              cp -r public/smoke/history artifacts/smoke/history || true
+            fi
+            
+            if [ -d public/regression/history ]; then
+              cp -r public/regression/history artifacts/regression/history || true
+            fi
 
 
       # Instalación Java + Allure
@@ -154,15 +175,15 @@ jobs:
       - name: Generate Allure Reports
         run: |
           mkdir -p public/smoke public/regression
-          
+            
           if [ -d artifacts/smoke ]; then
-            allure generate artifacts/smoke --clean -o public/smoke || true
+              allure generate artifacts/smoke --clean -o public/smoke || true
           fi
-          
+            
           if [ -d artifacts/regression ]; then
-            allure generate artifacts/regression --clean -o public/regression || true
+              allure generate artifacts/regression --clean -o public/regression || true
           fi
-      
+        
 
       # Creación index.html raíz para smoke y regression
 

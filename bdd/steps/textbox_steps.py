@@ -31,7 +31,7 @@ def step_enviar_formulario(driver):
 
 # ENTONCES
 @then("debería ver sus datos reflejados en el resultado")
-@allure.step("Validar resultado de envío del formulario")
+@allure.step("Validar los datos de envío del formulario")
 
 def step_verificar_resultado(driver):
     page = TextBoxPage(driver)
