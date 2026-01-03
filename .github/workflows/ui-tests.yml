@@ -233,6 +233,12 @@ jobs:
           path: artifacts/regression
         continue-on-error: true
 
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: public
+
 
       - name: Restore Allure history
         run: |
