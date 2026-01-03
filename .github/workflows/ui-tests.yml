@@ -152,7 +152,6 @@ jobs:
             mkdir -p artifacts/regression/allure-results/history
             cp -r public/regression/history artifacts/regression/allure-results/history
           fi
-
       - name: Inject Allure metadata
         run: |
           for suite in smoke regression; do
