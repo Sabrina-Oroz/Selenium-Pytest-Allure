@@ -50,56 +50,6 @@ jobs:
         run: pytest tests/smoke -m smoke --alluredir=reports/allure-results
         env:
           HEADLESS: true
-
-
-
-      - name: Generate Allure executor
-        run: |
-          mkdir -p allure
-          cat <<EOF > allure/executor.json
-          {
-            "name": "GitHub Actions",
-            "type": "github",
-            "buildName": "${{ github.workflow }}",
-            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-          }
-          EOF
-
-
-
-      - name: Generate Allure environment
-        run: |
-          mkdir -p allure
-
-          cat <<EOF > allure/environment.properties
-          Project=UI Automation
-          Module=Authentication & Forms
-          Environment=CI
-          BaseURL=https://the-internet.herokuapp.com   
-          Browser=Chrome
-          Browser.Version=Latest
-          OS=${{ runner.os }}
-          Execution.Type=${{ github.event_name }}
-          Test.Type=${{ github.event.inputs.test_type || 'smoke' }}
-          Repository=${{ github.repository }}
-          Branch=${{ github.ref_name }}
-          Commit=${{ github.sha }}
-          Workflow=${{ github.workflow }}
-          Job=${{ github.job }}
-          Run.ID=${{ github.run_id }}
-          Run.Number=${{ github.run_number }}
-          EOF
-
-
-
-      - name: Add Allure metadata
-        run: |
-          mkdir -p reports/allure-results
-          cp allure/environment.properties reports/allure-results/ || echo "No environment.properties"
-          cp allure/executor.json reports/allure-results/ || echo "No executor.json"
-          cp allure/categories.json reports/allure-results/ || echo "No categories.json"
-          
           
 
       - name: Upload Allure results
@@ -135,55 +85,6 @@ jobs:
         run: pytest tests/regression -m regression --alluredir=reports/allure-results
         env:
           HEADLESS: true
-
-
-      - name: Generate Allure executor
-        run: |
-          mkdir -p allure
-          cat <<EOF > allure/executor.json
-          {
-            "name": "GitHub Actions",
-            "type": "github",
-            "buildName": "${{ github.workflow }}",
-            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-          }
-          EOF    
-          
-
-      - name: Generate Allure environment
-        run: |
-          mkdir -p allure
-
-          cat <<EOF > allure/environment.properties
-          Project=UI Automation
-          Module=Authentication & Forms
-          Environment=CI
-          BaseURL=https://the-internet.herokuapp.com   
-          Browser=Chrome
-          Browser.Version=Latest
-          OS=${{ runner.os }}
-          Execution.Type=${{ github.event_name }}
-          Test.Type=${{ github.event.inputs.test_type || 'smoke' }}
-          Repository=${{ github.repository }}
-          Branch=${{ github.ref_name }}
-          Commit=${{ github.sha }}
-          Workflow=${{ github.workflow }}
-          Job=${{ github.job }}
-          Run.ID=${{ github.run_id }}
-          Run.Number=${{ github.run_number }}
-          EOF   
-          
-          
-
-      - name: Add Allure metadata
-        run: |
-          mkdir -p reports/allure-results
-          cp allure/environment.properties reports/allure-results/ || echo "No environment.properties"
-          cp allure/executor.json reports/allure-results/ || echo "No executor.json"
-          cp allure/categories.json reports/allure-results/ || echo "No categories.json"
-
-
 
       - name: Upload Allure results
         if: always()
@@ -251,6 +152,57 @@ jobs:
             mkdir -p artifacts/regression/history
             cp -r public/regression/history artifacts/regression/history
           fi
+
+
+      - name: Generate Allure metadata (Smoke)
+        if: needs.smoke-tests.result == 'success'
+        run: |
+          mkdir -p artifacts/smoke
+          cat <<EOF > artifacts/smoke/executor.json
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "buildName": "Smoke #${{ github.run_number }}",
+            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/smoke/"
+          }
+          EOF
+
+          cat <<EOF > artifacts/smoke/environment.properties
+          Project=UI Automation
+          Environment=CI
+          Test.Type=Smoke
+          Browser=Chrome
+          OS=${{ runner.os }}
+          Workflow=${{ github.workflow }}
+          Run=${{ github.run_number }}
+          EOF
+
+      - name: Generate Allure metadata (Regression)
+        if: needs.regression-tests.result == 'success'
+        run: |
+          mkdir -p artifacts/regression
+          cat <<EOF > artifacts/regression/executor.json
+          {
+             "name": "GitHub Actions",
+             "type": "github",
+             "buildName": "Regression #${{ github.run_number }}",
+             "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+             "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/regression/"
+          }
+          EOF
+
+          cat <<EOF > artifacts/regression/environment.properties
+          Project=UI Automation
+          Environment=CI
+          Test.Type=Regression
+          Browser=Chrome
+          OS=${{ runner.os }}
+          Workflow=${{ github.workflow }}
+          Run=${{ github.run_number }}
+          EOF
+
+
 
 
       # Instalación Java + Allure
