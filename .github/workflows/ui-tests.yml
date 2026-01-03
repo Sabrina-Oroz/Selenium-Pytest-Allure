@@ -155,31 +155,28 @@ jobs:
 
       - name: Inject Allure metadata
         run: |
-         for suite in smoke regression; do
-           if [ -d artifacts/$suite/allure-results ]; then
-             echo "Injecting metadata for $suite"
+          for suite in smoke regression; do
+          if [ -d artifacts/$suite/allure-results ]; then
+          echo "Injecting metadata for $suite"
 
-        # executor.json
-             cat <<EOF > artifacts/$suite/allure-results/executor.json
-             {
-               "name": "GitHub Actions",
-               "type": "github",
-               "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-               "buildOrder": "${{ github.run_number }}",
-               "buildName": "CI #${{ github.run_number }}",
-               "reportName": "Allure Report"
-             }
-             EOF
+          cat <<EOF > artifacts/$suite/allure-results/executor.json
+         {
+          "name": "GitHub Actions",
+          "type": "github",
+          "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+          "buildOrder": "${{ github.run_number }}",
+          "buildName": "CI #${{ github.run_number }}",
+          "reportName": "Allure Report"
+         }
+         EOF
 
-         # environment.properties
-             cat <<EOF > artifacts/$suite/allure-results/environment.properties
-             ENV=CI
-             BROWSER=Chrome
-             PYTHON_VERSION=3.11
-             EOF
+         cat <<EOF > artifacts/$suite/allure-results/environment.properties
+         ENV=CI
+         BROWSER=Chrome
+         SUITE=$suite
+         EOF
          fi
          done
-
 
 
       # Instalación Java + Allure
