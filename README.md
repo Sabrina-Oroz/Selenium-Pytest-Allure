@@ -16,7 +16,7 @@ Proyecto de automatización con tecnologías:
 ## Estrategia de testing y framework
 
 - Smoke tests: Validaciones funcionales críticas pre/post-deploy.
-[Formato: Pytest + Parametrización en BDD (Happy Path y CNCN) + Allure con labels y steps técnicos]
+[Formato: Pytest + Parametrización en BDD (Happy Path y CNCN) + Allure con labels y steps]
 
 CNCN: Casos Negativos Críticos de Negocio 
 (ej: contraseña inválida, usuario bloqueado, pago rechazado)
@@ -68,8 +68,8 @@ intermedios, escenarios negativos NO críticos, valores límites y validaciones 
   - Escenarios ambiguos donde el screenshot inmediato aporta un valor real para el diagnóstico
 
 - Estos asserts pueden adjuntar screenshots en el punto exacto del fallo.
-- Independientemente de esto, el framework siempre genera evidencias visuales al
-  finalizar un test fallido mediante un hook global de pytest (tests/conftest.py).
+- Independientemente de esto, el framework siempre genera evidencias visuales al finalizar un test fallido 
+  mediante un hook global de pytest (tests/conftest.py).
 
 
 ## Ejecución local
@@ -82,7 +82,19 @@ pytest -m regression --alluredir=reports/allure-results
 allure serve reports/allure-results
 
 
-## CI en GitHub
+## CI / CD en GitHub Actions
+# El pipeline ejecuta:
+- Instalación de dependencias 
 - Smoke automático en push (local)
 - Regression sólo en ejecución manual
+- Generación dinámica de metadata en Allure (ambiente, executor, categorías por defecto)
 - Reportes Allure publicados en GitHub Pages (/smoke: siempre actualizado, /regression: sólo cuando corre).
+
+
+## Reportes en Allure
+# Cada ejecución genera:
+- Reportes independientes por tipo de test
+- Información del executor (GitHub)
+- Variables de entorno que describen el contexto de ejecución
+- Históricos
+
