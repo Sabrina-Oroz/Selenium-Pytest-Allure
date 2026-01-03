@@ -168,13 +168,13 @@ jobs:
                 "buildName": "CI #${{ github.run_number }}",
                 "reportName": "Allure Report"
               }
-              EOF
+          EOF
 
               cat <<EOF > artifacts/$suite/allure-results/environment.properties
               ENV=CI
               BROWSER=Chrome
               SUITE=$suite
-              EOF
+          EOF
             fi
          done
 
