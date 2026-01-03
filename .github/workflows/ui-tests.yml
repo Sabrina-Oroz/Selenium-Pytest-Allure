@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-smoke
-          path: artifacts/smoke/allure-results
+          path: reports/allure-results
   
 
   regression-tests:
@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
            name: allure-results-regression
-           path: artifacts/regression/allure-results
+           path: reports/allure-results
       
 
 # GitHub: Se descargan los artefactos por separado - Se generan dos reportes distintos - Se publican ambos en Pages
