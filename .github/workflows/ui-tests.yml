@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results-smoke
-          path: reports/allure-results
+          path: artifacts/smoke/allure-results
   
 
   regression-tests:
@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
            name: allure-results-regression
-           path: reports/allure-results
+           path: artifacts/regression/allure-results
       
 
 # GitHub: Se descargan los artefactos por separado - Se generan dos reportes distintos - Se publican ambos en Pages
@@ -144,13 +144,13 @@ jobs:
       - name: Restore Allure history
         run: |
           if [ -d public/smoke/history ]; then
-            mkdir -p artifacts/smoke/history
-            cp -r public/smoke/history artifacts/smoke/history
+            mkdir -p artifacts/smoke/allure-results/history
+            cp -r public/smoke/history artifacts/smoke/allure-results/history
           fi
 
           if [ -d public/regression/history ]; then
-            mkdir -p artifacts/regression/history
-            cp -r public/regression/history artifacts/regression/history
+            mkdir -p artifacts/regression/allure-results/history
+            cp -r public/regression/history artifacts/regression/allure-results/history
           fi
 
 
@@ -158,7 +158,7 @@ jobs:
         if: needs.smoke-tests.result == 'success'
         run: |
           mkdir -p artifacts/smoke
-          cat <<EOF > artifacts/smoke/executor.json
+          cat <<EOF > artifacts/smoke/allure-results/executor.json
           {
             "name": "GitHub Actions",
             "type": "github",
@@ -168,7 +168,7 @@ jobs:
           }
           EOF
 
-          cat <<EOF > artifacts/smoke/environment.properties
+          cat <<EOF > artifacts/smoke/allure-results/environment.properties
           Project=UI Automation
           Environment=CI
           Test.Type=Smoke
@@ -182,7 +182,7 @@ jobs:
         if: needs.regression-tests.result == 'success'
         run: |
           mkdir -p artifacts/regression
-          cat <<EOF > artifacts/regression/executor.json
+          cat <<EOF > artifacts/regression/allure-results/executor.json
           {
              "name": "GitHub Actions",
              "type": "github",
@@ -192,7 +192,7 @@ jobs:
           }
           EOF
 
-          cat <<EOF > artifacts/regression/environment.properties
+          cat <<EOF > artifacts/regression/allure-results/environment.properties
           Project=UI Automation
           Environment=CI
           Test.Type=Regression
