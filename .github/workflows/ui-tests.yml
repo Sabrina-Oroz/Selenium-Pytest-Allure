@@ -238,14 +238,13 @@ jobs:
         run: |
           if [ -d public/smoke/history ]; then
             mkdir -p artifacts/smoke/history
-            cp -r public/smoke/history/* artifacts/smoke/history/
+            cp -r public/smoke/history artifacts/smoke/history
           fi
 
           if [ -d public/regression/history ]; then
             mkdir -p artifacts/regression/history
-            cp -r public/regression/history/* artifacts/regression/history/
+            cp -r public/regression/history artifacts/regression/history
           fi
-
 
 
       # Instalación Java + Allure
