@@ -53,6 +53,21 @@ jobs:
 
 
 
+      - name: Generate Allure executor
+        run: |
+          mkdir -p allure
+          cat <<EOF > allure/executor.json
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "buildName": "${{ github.workflow }}",
+            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          }
+          EOF
+
+
+
       - name: Generate Allure environment
         run: |
           mkdir -p allure
@@ -84,6 +99,8 @@ jobs:
           cp allure/environment.properties reports/allure-results/ || echo "No environment.properties"
           cp allure/executor.json reports/allure-results/ || echo "No executor.json"
           cp allure/categories.json reports/allure-results/ || echo "No categories.json"
+          
+          
 
       - name: Upload Allure results
         if: always()
@@ -119,11 +136,54 @@ jobs:
         env:
           HEADLESS: true
 
+
+      - name: Generate Allure executor
+        run: |
+          mkdir -p allure
+          cat <<EOF > allure/executor.json
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "buildName": "${{ github.workflow }}",
+            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          }
+          EOF    
+          
+
+      - name: Generate Allure environment
+        run: |
+          mkdir -p allure
+
+          cat <<EOF > allure/environment.properties
+          Project=UI Automation
+          Module=Authentication & Forms
+          Environment=CI
+          BaseURL=https://the-internet.herokuapp.com   
+          Browser=Chrome
+          Browser.Version=Latest
+          OS=${{ runner.os }}
+          Execution.Type=${{ github.event_name }}
+          Test.Type=${{ github.event.inputs.test_type || 'smoke' }}
+          Repository=${{ github.repository }}
+          Branch=${{ github.ref_name }}
+          Commit=${{ github.sha }}
+          Workflow=${{ github.workflow }}
+          Job=${{ github.job }}
+          Run.ID=${{ github.run_id }}
+          Run.Number=${{ github.run_number }}
+          EOF   
+          
+          
+
       - name: Add Allure metadata
         run: |
-          cp allure/environment.properties reports/allure-results/
-          cp allure/executor.json reports/allure-results/
-          cp allure/categories.json reports/allure-results/
+          mkdir -p reports/allure-results
+          cp allure/environment.properties reports/allure-results/ || echo "No environment.properties"
+          cp allure/executor.json reports/allure-results/ || echo "No executor.json"
+          cp allure/categories.json reports/allure-results/ || echo "No categories.json"
+
+
 
       - name: Upload Allure results
         if: always()
