@@ -159,7 +159,7 @@ jobs:
             if [ -d artifacts/$suite/allure-results ]; then
               echo "Injecting metadata for $suite"
 
-              cat <<EOF > artifacts/$suite/allure-results/executor.json
+              cat > artifacts/$suite/allure-results/executor.json <<EOF
               {
                 "name": "GitHub Actions",
                 "type": "github",
@@ -168,15 +168,16 @@ jobs:
                 "buildName": "CI #${{ github.run_number }}",
                 "reportName": "Allure Report"
               }
-          EOF
+              EOF
 
-              cat <<EOF > artifacts/$suite/allure-results/environment.properties
+              cat > artifacts/$suite/allure-results/environment.properties <<EOF
               ENV=CI
               BROWSER=Chrome
               SUITE=$suite
-          EOF
+              EOF
+
             fi
-         done
+          done
 
 
       # Instalación Java + Allure
