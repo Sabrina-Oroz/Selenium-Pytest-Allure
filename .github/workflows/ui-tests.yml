@@ -152,10 +152,11 @@ jobs:
             mkdir -p artifacts/regression/allure-results/history
             cp -r public/regression/history artifacts/regression/allure-results/history
           fi
+
       - name: Inject Allure metadata
         run: |
           for suite in smoke regression; do
-            if [ -d artifacts/$suite/allure-results ]; then
+          if [ -d artifacts/$suite/allure-results ]; then
               echo "Injecting metadata for $suite"
 
               cat <<EOF > artifacts/$suite/allure-results/executor.json
@@ -174,7 +175,7 @@ jobs:
               BROWSER=Chrome
               SUITE=$suite
               EOF
-            fi
+          fi
          done
 
 
