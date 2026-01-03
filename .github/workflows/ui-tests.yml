@@ -233,15 +233,19 @@ jobs:
           path: artifacts/regression
         continue-on-error: true
 
+
       - name: Restore Allure history
         run: |
-            if [ -d public/smoke/history ]; then
-              cp -r public/smoke/history artifacts/smoke/history || true
-            fi
-            
-            if [ -d public/regression/history ]; then
-              cp -r public/regression/history artifacts/regression/history || true
-            fi
+          if [ -d public/smoke/history ]; then
+            mkdir -p artifacts/smoke/history
+            cp -r public/smoke/history/* artifacts/smoke/history/
+          fi
+
+          if [ -d public/regression/history ]; then
+            mkdir -p artifacts/regression/history
+            cp -r public/regression/history/* artifacts/regression/history/
+          fi
+
 
 
       # Instalación Java + Allure
