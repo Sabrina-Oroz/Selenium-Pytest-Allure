@@ -153,55 +153,32 @@ jobs:
             cp -r public/regression/history artifacts/regression/allure-results/history
           fi
 
-
-      - name: Generate Allure metadata (Smoke)
-        if: needs.smoke-tests.result == 'success'
+      - name: Inject Allure metadata
         run: |
-          mkdir -p artifacts/smoke
-          cat <<EOF > artifacts/smoke/allure-results/executor.json
-          {
-            "name": "GitHub Actions",
-            "type": "github",
-            "buildName": "Smoke #${{ github.run_number }}",
-            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/smoke/"
-          }
-          EOF
+         for suite in smoke regression; do
+           if [ -d artifacts/$suite/allure-results ]; then
+             echo "Injecting metadata for $suite"
 
-          cat <<EOF > artifacts/smoke/allure-results/environment.properties
-          Project=UI Automation
-          Environment=CI
-          Test.Type=Smoke
-          Browser=Chrome
-          OS=${{ runner.os }}
-          Workflow=${{ github.workflow }}
-          Run=${{ github.run_number }}
-          EOF
+        # executor.json
+             cat <<EOF > artifacts/$suite/allure-results/executor.json
+             {
+               "name": "GitHub Actions",
+               "type": "github",
+               "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+               "buildOrder": "${{ github.run_number }}",
+               "buildName": "CI #${{ github.run_number }}",
+               "reportName": "Allure Report"
+             }
+             EOF
 
-      - name: Generate Allure metadata (Regression)
-        if: needs.regression-tests.result == 'success'
-        run: |
-          mkdir -p artifacts/regression
-          cat <<EOF > artifacts/regression/allure-results/executor.json
-          {
-             "name": "GitHub Actions",
-             "type": "github",
-             "buildName": "Regression #${{ github.run_number }}",
-             "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-             "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/regression/"
-          }
-          EOF
-
-          cat <<EOF > artifacts/regression/allure-results/environment.properties
-          Project=UI Automation
-          Environment=CI
-          Test.Type=Regression
-          Browser=Chrome
-          OS=${{ runner.os }}
-          Workflow=${{ github.workflow }}
-          Run=${{ github.run_number }}
-          EOF
-
+         # environment.properties
+             cat <<EOF > artifacts/$suite/allure-results/environment.properties
+             ENV=CI
+             BROWSER=Chrome
+             PYTHON_VERSION=3.11
+             EOF
+         fi
+         done
 
 
 
@@ -226,13 +203,13 @@ jobs:
       - name: Generate Allure Reports
         run: |
           mkdir -p public/smoke public/regression
-            
-          if [ -d artifacts/smoke ]; then
-              allure generate artifacts/smoke --clean -o public/smoke || true
+
+          if [ -d artifacts/smoke/allure-results ]; then
+              allure generate artifacts/smoke/allure-results --clean -o public/smoke
           fi
-            
-          if [ -d artifacts/regression ]; then
-              allure generate artifacts/regression --clean -o public/regression || true
+
+          if [ -d artifacts/regression/allure-results ]; then
+              allure generate artifacts/regression/allure-results --clean -o public/regression
           fi
         
 
