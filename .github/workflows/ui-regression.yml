@@ -2,7 +2,7 @@ name: UI Regression Tests
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # todos los días 03:00 UTC
+    - cron: "0 3 * * *"   # diario 03:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -23,28 +23,66 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest-rerunfailures allure-pytest
 
-      - name: Run regression tests
+      - name: Run regression tests (with retries)
         run: |
-          pytest -m regression --alluredir=allure-results
+          pytest -m regression \
+            --reruns 2 \
+            --reruns-delay 2 \
+            --alluredir=allure-results
+
+      - name: Inject Allure metadata (regression)
+        run: |
+          echo "Suite=Regression" >> allure-results/environment.properties
+          echo "Branch=${GITHUB_REF_NAME}" >> allure-results/environment.properties
+          echo "Commit=${GITHUB_SHA}" >> allure-results/environment.properties
+          echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
+          echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
+
+      - name: Download previous Allure history (regression)
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-history-regression
+          path: allure-report/history
+        continue-on-error: true
 
       - name: Generate Allure report
         run: |
-          allure generate allure-results -o allure-report --clean
+          allure generate allure-results -o allure-report --clean --history allure-report/history
 
-      - name: Upload Allure report artifact (regression)
+      - name: Prepare GitHub Pages content (regression)
+        run: |
+          mkdir -p public/regression
+          cp -r allure-report/* public/regression/
+
+      - name: Upload Pages artifact (regression)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: allure-report
+          path: public
 
-  deploy-regression-report:
+      - name: Upload Allure history artifact (regression)
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-history-regression
+          path: allure-report/history
+
+  deploy-regression:
     needs: ui-regression
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy Allure report to GitHub Pages (regression)
+      - name: Deploy Regression Allure report to GitHub Pages
         uses: actions/deploy-pages@v4
