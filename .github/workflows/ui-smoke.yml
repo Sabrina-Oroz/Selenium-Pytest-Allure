@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 jobs:
-  ui-smoke:
+  smoke:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,8 +32,6 @@ jobs:
         with:
           path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            pip-${{ runner.os }}-
 
       - name: Install dependencies
         run: |
@@ -41,7 +39,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest-rerunfailures allure-pytest
 
-      - name: Run smoke tests (with retries)
+      - name: Run smoke tests
         env:
           HEADLESS: "true"
         run: |
@@ -49,9 +47,6 @@ jobs:
             --reruns 2 \
             --reruns-delay 2 \
             --alluredir=allure-results
-
-      - name: Ensure Allure results dir exists
-        run: mkdir -p allure-results
 
       - name: Inject Allure environment (smoke)
         run: |
@@ -61,11 +56,11 @@ jobs:
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
 
-      - name: Inject Allure categories (smoke)
+      - name: Inject Allure categories
         run: |
-         cp reports/allure/categories.json allure-results/categories.json
+          cp reports/allure/categories.json allure-results/categories.json
 
-      - name: Download previous Allure history (smoke)
+      - name: Download Allure history (smoke)
         uses: actions/download-artifact@v4
         with:
           name: allure-history-smoke
@@ -80,33 +75,30 @@ jobs:
           tar -zxvf allure.tgz
           sudo mv allure-2.29.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
-          allure --version
-
 
       - name: Generate Allure report
         run: |
           allure generate allure-results -o allure-report --clean
 
-      - name: Prepare GitHub Pages content (smoke)
+      - name: Prepare Pages content
         run: |
           mkdir -p public/smoke
           cp -r allure-report/* public/smoke/
 
-      - name: Upload Pages artifact (smoke)
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
-      - name: Upload Allure history artifact (smoke)
+      - name: Upload Allure history
         uses: actions/upload-artifact@v4
         with:
           name: allure-history-smoke
           path: allure-report/history
 
-  deploy-smoke:
-    needs: ui-smoke
+  deploy:
+    needs: smoke
     runs-on: ubuntu-latest
-
     steps:
-      - name: Deploy Smoke Allure report to GitHub Pages
+      - name: Deploy Smoke report
         uses: actions/deploy-pages@v4
