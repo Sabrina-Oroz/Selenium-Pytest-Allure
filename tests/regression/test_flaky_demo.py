@@ -1,7 +1,7 @@
 import pytest
 import os
 
-@pytest.mark.smoke
+@pytest.mark.regression
 def test_flaky_demo():
     """
     Test flaky controlado:
