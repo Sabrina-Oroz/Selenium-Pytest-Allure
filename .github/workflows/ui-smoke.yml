@@ -104,6 +104,10 @@ jobs:
   deploy:
     needs: smoke
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+
     steps:
-      - name: Deploy Smoke report
-        uses: actions/deploy-pages@v4
+        - name: Deploy Smoke Allure report to GitHub Pages
+          uses: actions/deploy-pages@v4

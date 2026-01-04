@@ -103,6 +103,10 @@ jobs:
   deploy:
     needs: regression
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+
     steps:
-      - name: Deploy Regression report
+      - name: Deploy Regression Allure report to GitHub Pages
         uses: actions/deploy-pages@v4
