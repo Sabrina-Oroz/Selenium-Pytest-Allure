@@ -153,27 +153,7 @@ jobs:
             cp -r public/regression/history artifacts/regression/allure-results/history
           fi
 
-      - name: Inject Allure metadata
-        shell: bash
-        run: |
-          for suite in smoke regression; do
-            if [ -d artifacts/$suite/allure-results ]; then
-              echo "Injecting metadata for $suite"
-          
-              printf '{\n' > artifacts/$suite/allure-results/executor.json
-              printf '  "name": "GitHub Actions",\n' >> artifacts/$suite/allure-results/executor.json
-              printf '  "type": "github",\n' >> artifacts/$suite/allure-results/executor.json
-              printf '  "url": "https://github.com/%s/actions/runs/%s",\n' \
-                "${{ github.repository }}" "${{ github.run_id }}" >> artifacts/$suite/allure-results/executor.json
-              printf '  "buildOrder": "%s",\n' "${{ github.run_number }}" >> artifacts/$suite/allure-results/executor.json
-              printf '  "buildName": "CI #%s",\n' "${{ github.run_number }}" >> artifacts/$suite/allure-results/executor.json
-              printf '  "reportName": "Allure Report"\n' >> artifacts/$suite/allure-results/executor.json
-              printf '}\n' >> artifacts/$suite/allure-results/executor.json
-
-              printf 'ENV=CI\nBROWSER=Chrome\nSUITE=%s\n' "$suite" \
-                > artifacts/$suite/allure-results/environment.properties
-            fi
-          done
+     
 
 
       # Instalación Java + Allure
@@ -230,6 +210,14 @@ jobs:
       - name: Debug public folder
         run: |
           ls -R public
+          
+
+      - name: Debug allure-results
+        run: |
+          echo "Smoke:"
+          ls -R artifacts/smoke || true
+          echo "Regression:"
+          ls -R artifacts/regression || true
           
 
       # Publicación en GitHub Pages
