@@ -1,6 +1,7 @@
-[![UI Tests - Smoke](https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-tests.yml/badge.svg)](
-https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-tests.yml
-)
+![UI Smoke Tests](https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-smoke.yml/badge.svg)
+
+![UI Regression Tests](https://github.com/Sabrina-Oroz/Selenium-Pytest-Allure/actions/workflows/ui-regression.yml/badge.svg)
+
 
 ## Selenium + Pytest + Allure
 Proyecto de automatización con tecnologías:
@@ -11,10 +12,6 @@ Proyecto de automatización con tecnologías:
 - Page Object Model
 - BDD
 - CI con GitHub Actions
-
-
-
-
 
 
 ## Estrategia de testing y framework
@@ -100,5 +97,5 @@ allure serve reports/allure-results
 - Reportes independientes por tipo de test
 - Información del executor (GitHub)
 - Variables de entorno que describen el contexto de ejecución
-- Historial de ejecuciones para analizar tendencias y flaky tests
+- Historial de ejecuciones para analizar tendencias y flaky tests (inestabilidad por timing, UI, red, waits)
 

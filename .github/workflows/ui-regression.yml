@@ -47,6 +47,7 @@ jobs:
             --reruns-delay 2 \
             --alluredir=allure-results
 
+      # ---------- Allure metadata ----------
       - name: Inject Allure environment (regression)
         run: |
           echo "Suite=Regression" >> allure-results/environment.properties
@@ -54,17 +55,16 @@ jobs:
           echo "Commit=${GITHUB_SHA}" >> allure-results/environment.properties
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
-          echo "OS=ubuntu-latest" >> allure-results/environment.properties
+          echo "OS=Linux" >> allure-results/environment.properties
+          echo "Runner=ubuntu-latest" >> allure-results/environment.properties
           echo "Browser=Chrome" >> allure-results/environment.properties
           echo "Headless=true" >> allure-results/environment.properties
-          
 
       - name: Inject Allure categories
         run: |
           cp reports/allure/categories.json allure-results/categories.json
-      
 
-      - name: Inject Allure executor (smoke)
+      - name: Inject Allure executor (regression)
         run: |
           cat <<EOF > allure-results/executor.json
           {
@@ -75,16 +75,23 @@ jobs:
             "buildName": "Regression Tests",
             "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
-          EOF    
-          
+          EOF
 
-      - name: Download Allure history (regression)
-        uses: actions/download-artifact@v4
+      # ---------- Restore history from Pages ----------
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
         with:
-          name: allure-history-regression
-          path: allure-report/history
-        continue-on-error: true
+          ref: gh-pages
+          path: gh-pages
 
+      - name: Restore Allure history (regression)
+        run: |
+          if [ -d gh-pages/regression/history ]; then
+            mkdir -p allure-results/history
+            cp -r gh-pages/regression/history/* allure-results/history/
+          fi
+
+      # ---------- Allure ----------
       - name: Install Allure CLI
         run: |
           sudo apt-get update
@@ -102,27 +109,16 @@ jobs:
         run: |
           mkdir -p public/regression
           cp -r allure-report/* public/regression/
-
-      - name: Add root index page
-        run: |
-          cp index.html public/index.html    
-          
+          cp index.html public/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
-      - name: Upload Allure history
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-history-regression
-          path: allure-report/history
-
   deploy:
     needs: regression
     runs-on: ubuntu-latest
-
     environment:
       name: github-pages
 

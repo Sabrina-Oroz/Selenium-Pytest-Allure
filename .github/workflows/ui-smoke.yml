@@ -48,6 +48,7 @@ jobs:
             --reruns-delay 2 \
             --alluredir=allure-results
 
+      # ---------- Allure metadata ----------
       - name: Inject Allure environment (smoke)
         run: |
           echo "Suite=Smoke" >> allure-results/environment.properties
@@ -55,15 +56,15 @@ jobs:
           echo "Commit=${GITHUB_SHA}" >> allure-results/environment.properties
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
-          echo "OS=ubuntu-latest" >> allure-results/environment.properties
+          echo "OS=Linux" >> allure-results/environment.properties
+          echo "Runner=ubuntu-latest" >> allure-results/environment.properties
           echo "Browser=Chrome" >> allure-results/environment.properties
           echo "Headless=true" >> allure-results/environment.properties
-          
 
       - name: Inject Allure categories
         run: |
           cp reports/allure/categories.json allure-results/categories.json
-          
+
       - name: Inject Allure executor (smoke)
         run: |
           cat <<EOF > allure-results/executor.json
@@ -76,16 +77,22 @@ jobs:
             "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
           EOF
-          
-          
 
-      - name: Download Allure history (smoke)
-        uses: actions/download-artifact@v4
+      # ---------- Restore history from Pages ----------
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
         with:
-          name: allure-history-smoke
-          path: allure-report/history
-        continue-on-error: true
+          ref: gh-pages
+          path: gh-pages
 
+      - name: Restore Allure history (smoke)
+        run: |
+          if [ -d gh-pages/smoke/history ]; then
+            mkdir -p allure-results/history
+            cp -r gh-pages/smoke/history/* allure-results/history/
+          fi
+
+      # ---------- Allure ----------
       - name: Install Allure CLI
         run: |
           sudo apt-get update
@@ -103,30 +110,19 @@ jobs:
         run: |
           mkdir -p public/smoke
           cp -r allure-report/* public/smoke/
-
-      - name: Add root index page
-        run: |
-          cp index.html public/index.html  
-          
+          cp index.html public/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
-      - name: Upload Allure history
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-history-smoke
-          path: allure-report/history
-
   deploy:
     needs: smoke
     runs-on: ubuntu-latest
-
     environment:
       name: github-pages
 
     steps:
-        - name: Deploy Smoke Allure report to GitHub Pages
-          uses: actions/deploy-pages@v4
+      - name: Deploy Smoke Allure report to GitHub Pages
+        uses: actions/deploy-pages@v4
