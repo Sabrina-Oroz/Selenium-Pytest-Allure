@@ -12,23 +12,27 @@ from datetime import datetime                                    # módulo de py
 
 
 def create_driver():
-    # opciones antes de abrir el navegador
     chrome_options = Options()
-    chrome_options.add_argument("--start-maximized")
+
+    # Opciones generales antes de abrir chrome
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--blink-settings=imagesEnabled=false")
 
-    # control por variables de entorno (local - CI)
+    # Control por variable de entorno
     headless = os.getenv("HEADLESS", "false").lower() == "true"
 
-    # headless que permiten ejecutar el navegador sin interfaz gráfica visible (CI)
     if headless:
+        # === FLAGS OBLIGATORIOS EN CI ===
         chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1920,1080")
+    else:
+        chrome_options.add_argument("--start-maximized")
 
-    # ruta del driver automático
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
+
     return driver
