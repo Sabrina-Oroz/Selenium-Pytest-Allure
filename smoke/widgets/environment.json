@@ -1,1 +1,1 @@
-[]
+[{"values":["CI"],"name":"ENV"},{"values":["Chrome"],"name":"BROWSER"},{"values":["smoke"],"name":"SUITE"}]
