@@ -54,10 +54,29 @@ jobs:
           echo "Commit=${GITHUB_SHA}" >> allure-results/environment.properties
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
+          echo "OS=ubuntu-latest" >> allure-results/environment.properties
+          echo "Browser=Chrome" >> allure-results/environment.properties
+          echo "Headless=true" >> allure-results/environment.properties
+          
 
       - name: Inject Allure categories
         run: |
           cp reports/allure/categories.json allure-results/categories.json
+      
+
+      - name: Inject Allure executor (smoke)
+        run: |
+          cat <<EOF > allure-results/executor.json
+          {
+            "name": "GitHub Actions",
+            "type": "CI",
+            "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "buildOrder": "${{ github.run_number }}",
+            "buildName": "Regression Tests",
+            "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          EOF    
+          
 
       - name: Download Allure history (regression)
         uses: actions/download-artifact@v4
