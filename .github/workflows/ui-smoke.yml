@@ -44,6 +44,7 @@ jobs:
           HEADLESS: "true"
         run: |
           pytest -m smoke \
+            -n auto \
             --reruns 2 \
             --reruns-delay 2 \
             --alluredir=allure-results

@@ -98,4 +98,7 @@ allure serve reports/allure-results
 - Información del executor (GitHub)
 - Variables de entorno que describen el contexto de ejecución
 - Historial de ejecuciones para analizar tendencias y flaky tests (inestabilidad por timing, UI, red, waits)
+  A través de pytest los tests corren con --reruns 2 (repeticiones). Es decir que por cada test se realiza 
+  1 intento original + 2 reintentos. Por ende, si falla y luego pasa, allure lo marca como flaky 
+  
 

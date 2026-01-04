@@ -43,6 +43,7 @@ jobs:
           HEADLESS: "true"
         run: |
           pytest -m regression \
+            -n auto \
             --reruns 2 \
             --reruns-delay 2 \
             --alluredir=allure-results
