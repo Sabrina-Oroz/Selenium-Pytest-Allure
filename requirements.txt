@@ -2,4 +2,5 @@ pytest
 pytest-bdd
 selenium
 webdriver-manager
+pytest-rerunfailures
 allure-pytest
