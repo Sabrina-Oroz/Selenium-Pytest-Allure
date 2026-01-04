@@ -126,6 +126,7 @@ jobs:
         continue-on-error: true
 
       - name: Download Regression Allure results
+        if: needs.regression-tests.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: allure-results-regression
