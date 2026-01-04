@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Allure Reports</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 30px;
+    }
+    a {
+      display: block;
+      width: 260px;
+      text-align: center;
+      padding: 15px;
+      margin: 10px;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 8px;
+      color: white;
+    }
+    .smoke {
+      background-color: #22c55e;
+    }
+    .regression {
+      background-color: #3b82f6;
+    }
+    a:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Allure Test Reports</h1>
+
+  <a class="smoke" href="./smoke/"> Smoke Tests</a>
+  <a class="regression" href="./regression/"> Regression Tests</a>
+</body>
+</html>
