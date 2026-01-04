@@ -13,6 +13,10 @@ Proyecto de automatización con tecnologías:
 - CI con GitHub Actions
 
 
+
+
+
+
 ## Estrategia de testing y framework
 
 - Smoke tests: Validaciones funcionales críticas pre/post-deploy.
@@ -32,20 +36,20 @@ intermedios, escenarios negativos NO críticos, valores límites y validaciones 
 | **Regression** | Cobertura funcional profunda                       | CRITICAL / NORMAL / MINOR |
 
 
-- BDD ---> funcionalidades o flujos de negocio críticos con Gherkin + Allure = Smoke tests
+- **BDD** ---> funcionalidades o flujos de negocio críticos con Gherkin + Allure = Smoke tests
 
-- Pytest clásico ---> validaciones técnicas y parametrizadas + Allure = Regression tests
+- **Pytest clásico** ---> validaciones técnicas y parametrizadas + Allure = Regression tests  
 
-- POM ---> acciones de negocio encapsulando selenium
+- **POM** ---> acciones de negocio encapsulando Selenium  
 
-- BasePage ---> infra reutilizable
+- **BasePage** ---> infra reutilizable  
 
-- Allure ---> refleja feature, scenarios, tags (@smoke, @regression, @bdd), labels y parametrización pytest
+- **Allure** ---> refleja feature, scenarios, tags (@smoke, @regression, @bdd), labels y parametrización pytest  
 
-- Escalabilidad: - Agregado de features BDD sin duplicar lógica 
-                 - Los Page Objects se reutilizan con steps finitos.
+- **Escalabilidad** ---> agregado de features BDD sin duplicar lógica; Page Objects reutilizables con steps finitos  
 
-- Ejecución selectiva local y CI ---> solo smoke, solo regression, solo bdd, todo
+- **Ejecución selectiva local y CI** ---> solo smoke, solo regression, solo BDD, todo
+
 
 
 ## Reglas de diseño
@@ -66,7 +70,6 @@ intermedios, escenarios negativos NO críticos, valores límites y validaciones 
   - Casos críticos
   - Fallos inesperados
   - Escenarios ambiguos donde el screenshot inmediato aporta un valor real para el diagnóstico
-
 - Estos asserts pueden adjuntar screenshots en el punto exacto del fallo.
 - Independientemente de esto, el framework siempre genera evidencias visuales al finalizar un test fallido 
   mediante un hook global de pytest (tests/conftest.py).
@@ -88,6 +91,7 @@ allure serve reports/allure-results
 - Smoke automático en push (local)
 - Regression sólo en ejecución manual
 - Generación dinámica de metadata en Allure (ambiente, executor, categorías por defecto)
+- Histórico de ejecuciones
 - Reportes Allure publicados en GitHub Pages (/smoke: siempre actualizado, /regression: sólo cuando corre).
 
 
@@ -96,5 +100,5 @@ allure serve reports/allure-results
 - Reportes independientes por tipo de test
 - Información del executor (GitHub)
 - Variables de entorno que describen el contexto de ejecución
-- Históricos
+- Historial de ejecuciones para analizar tendencias y flaky tests
 

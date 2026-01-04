@@ -2,7 +2,7 @@ name: UI Regression Tests
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # diario 03:00 UTC
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -44,13 +44,19 @@ jobs:
             --reruns-delay 2 \
             --alluredir=allure-results
 
-      - name: Inject Allure metadata (regression)
+      #  Metadata
+      - name: Inject Allure environment (regression)
         run: |
           echo "Suite=Regression" >> allure-results/environment.properties
           echo "Branch=${GITHUB_REF_NAME}" >> allure-results/environment.properties
           echo "Commit=${GITHUB_SHA}" >> allure-results/environment.properties
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
+
+      #  Categories (FIX definitivo)
+      - name: Inject Allure categories (regression)
+        run: |
+          cp allure/categories.json allure-results/categories.json
 
       - name: Download previous Allure history (regression)
         uses: actions/download-artifact@v4
@@ -61,7 +67,7 @@ jobs:
 
       - name: Generate Allure report
         run: |
-          allure generate allure-results -o allure-report --clean --history allure-report/history
+          allure generate allure-results -o allure-report --clean
 
       - name: Prepare GitHub Pages content (regression)
         run: |
