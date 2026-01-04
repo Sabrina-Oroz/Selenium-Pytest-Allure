@@ -119,19 +119,17 @@ jobs:
       # Descarga los artefactos
 
       - name: Download Smoke Allure results
-        if: needs.smoke-tests.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: allure-results-smoke
-          path: artifacts/smoke
+          path: artifacts/smoke/allure-results
         continue-on-error: true
 
       - name: Download Regression Allure results
-        if: needs.regression-tests.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: allure-results-regression
-          path: artifacts/regression
+          path: artifacts/regression/allure-results
         continue-on-error: true
 
       - name: Checkout gh-pages
