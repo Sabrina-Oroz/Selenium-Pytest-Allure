@@ -154,28 +154,24 @@ jobs:
           fi
 
       - name: Inject Allure metadata
+        shell: bash
         run: |
           for suite in smoke regression; do
             if [ -d artifacts/$suite/allure-results ]; then
               echo "Injecting metadata for $suite"
+          
+              printf '{\n' > artifacts/$suite/allure-results/executor.json
+              printf '  "name": "GitHub Actions",\n' >> artifacts/$suite/allure-results/executor.json
+              printf '  "type": "github",\n' >> artifacts/$suite/allure-results/executor.json
+              printf '  "url": "https://github.com/%s/actions/runs/%s",\n' \
+                "${{ github.repository }}" "${{ github.run_id }}" >> artifacts/$suite/allure-results/executor.json
+              printf '  "buildOrder": "%s",\n' "${{ github.run_number }}" >> artifacts/$suite/allure-results/executor.json
+              printf '  "buildName": "CI #%s",\n' "${{ github.run_number }}" >> artifacts/$suite/allure-results/executor.json
+              printf '  "reportName": "Allure Report"\n' >> artifacts/$suite/allure-results/executor.json
+              printf '}\n' >> artifacts/$suite/allure-results/executor.json
 
-              cat > artifacts/$suite/allure-results/executor.json <<EOF
-              {
-                "name": "GitHub Actions",
-                "type": "github",
-                "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "buildOrder": "${{ github.run_number }}",
-                "buildName": "CI #${{ github.run_number }}",
-                "reportName": "Allure Report"
-              }
-              EOF
-
-              cat > artifacts/$suite/allure-results/environment.properties <<EOF
-              ENV=CI
-              BROWSER=Chrome
-              SUITE=$suite
-              EOF
-
+              printf 'ENV=CI\nBROWSER=Chrome\nSUITE=%s\n' "$suite" \
+                > artifacts/$suite/allure-results/environment.properties
             fi
           done
 
