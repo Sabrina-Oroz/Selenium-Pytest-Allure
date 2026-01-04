@@ -1,5 +1,5 @@
 pytest
 pytest-bdd
 selenium
-webdriver-maneger
+webdriver-manager
 allure-pytest
