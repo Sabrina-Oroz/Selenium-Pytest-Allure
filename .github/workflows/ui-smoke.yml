@@ -63,7 +63,7 @@ jobs:
 
       - name: Inject Allure categories (smoke)
         run: |
-          cp allure/categories.json allure-results/categories.json
+         cp "$GITHUB_WORKSPACE/allure/categories.json" allure-results/categories.json
 
       - name: Download previous Allure history (smoke)
         uses: actions/download-artifact@v4
