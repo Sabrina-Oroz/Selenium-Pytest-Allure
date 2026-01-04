@@ -29,7 +29,7 @@ class ComboBoxPage(BasePage):
 
     ## == ComboBox 1  == selección de un valor
     def select_combobox_1(self, option):
-        select = Select(self.wait.until(EC.presence_of_element_located(self.COMBOBOX_1)))
+        select = Select(self.wait.until(EC.element_to_be_clickable(self.COMBOBOX_1)))
         select.select_by_visible_text(option)
 
 
@@ -59,11 +59,11 @@ class ComboBoxPage(BasePage):
 
     # == Sistema Operativo + Versión ==
     def select_os(self, os_name):
-        select = Select(self.wait.until(EC.presence_of_element_located(self.OS_SELECT)))
+        select = Select(self.wait.until(EC.element_to_be_clickable(self.OS_SELECT)))
         select.select_by_visible_text(os_name)
 
     def select_version(self, version):
-        select = Select(self.wait.until(EC.presence_of_element_located(self.VERSION_SELECT)))
+        select = Select(self.wait.until(EC.element_to_be_clickable(self.VERSION_SELECT)))
 
         # Obtenemos los textos disponibles e iteramos (validación previa por método dependiente)
         available_versions = [option.text for option in select.options]
