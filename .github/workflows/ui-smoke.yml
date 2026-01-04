@@ -1,0 +1,51 @@
+name: UI Smoke Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  ui-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run smoke tests
+        run: |
+          pytest -m smoke --alluredir=allure-results
+
+      - name: Generate Allure report
+        run: |
+          allure generate allure-results -o allure-report --clean
+
+      - name: Upload Allure report artifact (smoke)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+  deploy-smoke-report:
+    needs: ui-smoke
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Allure report to GitHub Pages (smoke)
+        uses: actions/deploy-pages@v4
