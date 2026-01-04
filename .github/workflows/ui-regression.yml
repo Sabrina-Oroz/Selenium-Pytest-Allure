@@ -84,6 +84,11 @@ jobs:
           mkdir -p public/regression
           cp -r allure-report/* public/regression/
 
+      - name: Add root index page
+        run: |
+          cp index.html public/index.html    
+          
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
