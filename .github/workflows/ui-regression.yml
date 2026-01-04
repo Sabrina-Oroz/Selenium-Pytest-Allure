@@ -2,7 +2,7 @@ name: UI Regression Tests
 
 on:
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "0 3 * * *"   # diario 03:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,13 +41,17 @@ jobs:
           pip install pytest-rerunfailures allure-pytest
 
       - name: Run regression tests (with retries)
+        env:
+          HEADLESS: "true"
         run: |
           pytest -m regression \
             --reruns 2 \
             --reruns-delay 2 \
             --alluredir=allure-results
 
-      #  Metadata
+      - name: Ensure Allure results dir exists
+        run: mkdir -p allure-results
+
       - name: Inject Allure environment (regression)
         run: |
           echo "Suite=Regression" >> allure-results/environment.properties
@@ -53,7 +60,6 @@ jobs:
           echo "RunNumber=${GITHUB_RUN_NUMBER}" >> allure-results/environment.properties
           echo "TriggeredBy=${GITHUB_EVENT_NAME}" >> allure-results/environment.properties
 
-      #  Categories (FIX definitivo)
       - name: Inject Allure categories (regression)
         run: |
           cp allure/categories.json allure-results/categories.json
